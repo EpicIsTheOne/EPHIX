@@ -332,6 +332,8 @@
   }
 
   fetch("/Tracker/api/meta").then((r) => r.json()).then((d) => {
+    const pt = g("pm-total");
+    if (pt && d && Number.isFinite(d.total)) pt.textContent = d.total;
     settled(true);
   }).catch(() => settled(false));
 
@@ -341,7 +343,9 @@
   }).catch(() => settled(false));
 
   fetch("/Arcade/api/builds").then((r) => r.json()).then((d) => {
-    g("pm-ex").textContent = `${d.count} EXHIBITS ON DISPLAY`;
+    // same total the Arcade page shows: local builds + synced remote repo games
+    const remote = d.arcade && Array.isArray(d.arcade.games) ? d.arcade.games.length : 0;
+    g("pm-ex").textContent = `${d.count + remote} EXHIBITS ON DISPLAY`;
     settled(true);
   }).catch(() => settled(false));
 
